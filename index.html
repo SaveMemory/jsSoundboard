@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,35 @@
     <title>Document</title>
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
+
 <body>
+    <div id="soundBoxesContainer">
+        <div class="soundBox">
+            <audio class="sounds" src="./boom.wav" data-code="113"></audio>
+            <span class="assignedButton">q</span>
+            <span class="sBtn btnRe" style="display: none;">Reassign</span>
+        </div>
+
+        <div class="soundBox">
+            <audio class="sounds" src="./clap.wav" data-code="119"></audio>
+            <span class="assignedButton">w</span>
+            <span class="sBtn btnRe" style="display: none;">Reassign</span>
+        </div>
+
+        <div class="soundBox">
+            <audio class="sounds" src="./kick.wav" data-code="101"></audio>
+            <span class="assignedButton">e</span>
+            <span class="sBtn btnRe" style="display: none;">Reassign</span>
+        </div>
+
+        <div class="soundBox">
+            <audio class="sounds" src="./snare.wav" data-code="114"></audio>
+            <span class="assignedButton">r</span>
+            <span class="sBtn btnRe" style="display: none;">Reassign</span>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
+
 </html>
