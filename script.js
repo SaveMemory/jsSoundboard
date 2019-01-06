@@ -1,5 +1,20 @@
 let soundsList = document.querySelectorAll(".sounds");
 window.addEventListener('keypress', playKeyboard);
+
+//tablica na obiekty Recorder
+let trackList = [];
+
+//obiekt zawierający wszystkie dźwięki
+let Sounds = {
+    list: {},
+    loadSounds: function () {
+        this.list = {};
+        for (let i = 0; i < soundsList.length; i++) {
+            Sounds.list[soundsList[i].dataset.code] = soundsList[i];
+        }
+    }
+};
+
 //odtwarzanie dźwieków po kliknięciu klawiszy
 let playButtons = document.querySelectorAll(".soundBox");
 
@@ -8,13 +23,24 @@ let trackBoxes = document.querySelectorAll(".trackBox");
 trackBoxes.forEach((item) => {
     trackList.push(new Recorder(item));
     item.querySelector(".track").recElement = trackList[trackList.length - 1];
+    item.querySelector(".trackPlay").addEventListener("click", playTrack);
     item.querySelector(".trackRecord").addEventListener("click", recordTrack);
     item.querySelector(".trackReset").addEventListener("click", () => {
         item.querySelector(".track").recElement.reset();
     });
 });
+
 //Event listenery dla globalnych funkcji dla buttonów
 let assignWindow = document.querySelector("#dimness");
+
+//odtwarzanie dźwieków
+function playTrack(e) {
+    let CrntTrack = trackList[e.target.parentElement.dataset.trackid];
+
+    if (!e.target.parentElement.querySelector(".trackRecord").classList.contains("active")) {
+        CrntTrack.play();
+    }
+}
 
 //nagrywanie dźwieków
 function recordTrack(e) {
@@ -26,7 +52,6 @@ function recordTrack(e) {
         CrntTrack.recordTrack();
     }
 }
-
 Sounds.loadSounds();
 //konstruktor obiektu do obsługi nagrywania i odtwarzania dźwięków
 function Recorder(trackBox) {
@@ -40,6 +65,58 @@ function Recorder(trackBox) {
     this.isRecording = () => {
         return this.trackBox.querySelector(".trackRecord").classList.contains("active")
     };
+}
+
+//metoda do odtwarzania dźwięków
+Recorder.prototype.play = function () {
+    if (!this.isRecording()) {
+        if (this.soundLog.length > 0) {
+            if (this.crntTimeout == "not Playing") {
+                let pointerTime = parseFloat(this.pointer.style.left) * this.trackScale;
+                let sPSumTime = this.soundLog[this.i].time;
+                let startingTime = 0;
+                while (pointerTime > sPSumTime) {
+                    this.i++;
+                    if (this.i < this.soundLog.length)
+                        sPSumTime += this.soundLog[this.i].time;
+                    else {
+                        this.i = 0;
+                        this.pointer.style.left = "0px";
+                        pointerTime = 0;
+                        sPSumTime = this.soundLog[this.i].time;
+                    }
+                }
+                startingTime = sPSumTime - pointerTime;
+
+                this.crntTimeout =
+                    setTimeout(() => {
+                        this.play()
+                    }, startingTime);
+
+                this.trackBox.querySelector(".trackPlay").classList.add("active");
+                this.movePointer(Date.now() - pointerTime);
+            } else {
+                let playingSoundpiece = this.soundLog[this.i].soundPiece;
+                playingSoundpiece.classList.add("playing");
+                setTimeout(() => {
+                    playingSoundpiece.classList.remove("playing");
+                }, 400);
+                this.soundLog[this.i].sound.currentTime = 0;
+                this.soundLog[this.i].sound.play();
+                this.i++;
+                if (this.soundLog[this.i])
+                    this.crntTimeout = setTimeout(() => {
+                        this.play()
+                    }, this.soundLog[this.i].time);
+                else {
+                    this.i = 0;
+                    this.crntTimeout = "not Playing";
+                    this.trackBox.querySelector(".trackPlay").classList.remove("active");
+                    this.pointer.style.left = "0px";
+                }
+            }
+        }
+    }
 }
 
 //funkcja tworząca nowe obiekty Soundlog
@@ -99,6 +176,20 @@ Recorder.prototype.reTiming = function () {
     this.duration = tmp;
 }
 
+//funkcja która przesuwa suwak dla odtwarzania
+Recorder.prototype.movePointer = function (tStart) {
+    let dt = Date.now();
+    this.pointer.style.left = ((dt - tStart) / this.trackScale) + "px";
+    this.scrollByPointer();
+    let isPlaying = this.trackBox.querySelector(".trackPlay").classList.contains("active");
+    if (dt < this.duration + tStart && isPlaying) {
+        requestAnimationFrame(() => {
+            this.movePointer(tStart)
+        });
+    } else {
+        this.pointer.style.left = "0px";
+    }
+}
 
 //funkcja która przesuwa suwak dla nagrywania
 Recorder.prototype.recordingPointer = function (tPrev) {
@@ -118,7 +209,29 @@ Recorder.prototype.recordingPointer = function (tPrev) {
     }
 }
 
-//wyświetlanie suwaka w ruchu
+//resetowanie nagrania
+Recorder.prototype.reset = function () {
+    this.duration = 0;
+
+    this.soundLog.forEach(function (element) {
+        element.soundPiece.remove();
+    });
+
+    this.soundLog = [];
+    this.trackScale = 10;
+    this.i = 0;
+
+    clearTimeout(this.crntTimeout);
+
+    this.crntTimeout = "not Playing";
+    this.trackBox.querySelector(".trackPlay").classList.remove("active");
+}
+
+Recorder.prototype.recordTrack = function () {
+    this.recordingPointer(Date.now());
+}
+
+//Function for scrolling track for pointer to be visible
 Recorder.prototype.scrollByPointer = function () {
     let pPos = parseFloat(this.pointer.style.left);
     let tWidth = parseFloat(this.trackBox.offsetWidth) - 200;
@@ -126,4 +239,15 @@ Recorder.prototype.scrollByPointer = function () {
         this.trackBox.querySelector(".track").scrollLeft = pPos - tWidth;
     else
         this.trackBox.querySelector(".track").scrollLeft = 0;
+}
+
+//odtwarznie dźwięków i nagrywanie ich
+function playKeyboard(e) {
+    if (Sounds.list.hasOwnProperty(e.charCode)) {
+        trackList.forEach((track) => {
+            if (track.isRecording()) track.logNewKey(e.charCode);
+        });
+        Sounds.list[e.charCode].currentTime = 0;
+        Sounds.list[e.charCode].play();
+    }
 }
