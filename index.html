@@ -1,42 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="style.css" />
     <title>Document</title>
-    <link rel="stylesheet" type="text/css" href="style.css">
-</head>
+  </head>
 
-<body>
+  <body>
     <div id="soundBoxesContainer">
-        <div class="soundBox">
-            <audio class="sounds" src="./boom.wav" data-code="113"></audio>
-            <span class="assignedButton">q</span>
-            <span class="sBtn btnRe" style="display: none;">Reassign</span>
-        </div>
+      <div class="soundBox">
+        <audio class="sounds" src="./sounds/boom.wav" data-code="113"></audio>
+        <span class="assignedButton">q</span>
+        <span class="sBtn btnRe" style="display: none;">Reassign</span>
+      </div>
 
-        <div class="soundBox">
-            <audio class="sounds" src="./clap.wav" data-code="119"></audio>
-            <span class="assignedButton">w</span>
-            <span class="sBtn btnRe" style="display: none;">Reassign</span>
-        </div>
+      <div class="soundBox">
+        <audio class="sounds" src="./sounds/clap.wav" data-code="119"></audio>
+        <span class="assignedButton">w</span>
+        <span class="sBtn btnRe" style="display: none;">Reassign</span>
+      </div>
 
-        <div class="soundBox">
-            <audio class="sounds" src="./kick.wav" data-code="101"></audio>
-            <span class="assignedButton">e</span>
-            <span class="sBtn btnRe" style="display: none;">Reassign</span>
-        </div>
+      <div class="soundBox">
+        <audio class="sounds" src="./sounds/hihat.wav" data-code="101"></audio>
+        <span class="assignedButton">e</span>
+        <span class="sBtn btnRe" style="display: none;">Reassign</span>
+      </div>
 
-        <div class="soundBox">
-            <audio class="sounds" src="./snare.wav" data-code="114"></audio>
-            <span class="assignedButton">r</span>
-            <span class="sBtn btnRe" style="display: none;">Reassign</span>
-        </div>
+      <div class="soundBox">
+        <audio class="sounds" src="./sounds/kick.wav" data-code="114"></audio>
+        <span class="assignedButton">r</span>
+        <span class="sBtn btnRe" style="display: none;">Reassign</span>
+      </div>
+
+      <div class="soundBox">
+        <audio
+          class="sounds"
+          src="./sounds/openhat.wav"
+          data-code="116"
+        ></audio>
+        <span class="assignedButton">t</span>
+        <span class="sBtn btnRe" style="display: none;">Reassign</span>
+      </div>
+    </div>
+
+    <div id="trackBoxesContainer">
+      <div class="trackBox" data-trackId="0">
+        <div class="trackPlay tBtn">Play</div>
+        <div class="trackRecord tBtn">Record</div>
+        <div class="trackReset tBtn">Reset</div>
+        <div class="track"><div class="pointer" style="left: 0px"></div></div>
+      </div>
+
+      <div class="trackBox" data-trackId="1">
+        <div class="trackPlay tBtn">Play</div>
+        <div class="trackRecord tBtn">Record</div>
+        <div class="trackReset tBtn">Reset</div>
+        <div class="track"><div class="pointer" style="left: 0px"></div></div>
+      </div>
+
+      <div class="trackBox" data-trackId="2">
+        <div class="trackPlay tBtn">Play</div>
+        <div class="trackRecord tBtn">Record</div>
+        <div class="trackReset tBtn">Reset</div>
+        <div class="track"><div class="pointer" style="left: 0px"></div></div>
+      </div>
+
+      <div class="trackBox" data-trackId="3">
+        <div class="trackPlay tBtn">Play</div>
+        <div class="trackRecord tBtn">Record</div>
+        <div class="trackReset tBtn">Reset</div>
+        <div class="track"><div class="pointer" style="left: 0px"></div></div>
+      </div>
     </div>
 
     <script src="script.js"></script>
-</body>
-
+  </body>
 </html>
